@@ -1,4 +1,5 @@
 #include <chrono>
+#include <cstdlib>
 #include <iostream>
 #include <map>
 #include <random>
@@ -79,6 +80,26 @@ std::vector<int> integerSequence(int start, int end)
 // {
 // }
 
+bool isLeapYear(int year)
+{
+    if (year % 400 == 0)
+    {
+        return true;
+    }
+    else if (year % 100 == 0)
+    {
+        return false;
+    }
+    else if (year % 4 == 0)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
 std::vector<std::string> randomDate(std::string start_date, std::string end_date, int num)
 {
 
@@ -114,7 +135,9 @@ std::vector<std::string> randomDate(std::string start_date, std::string end_date
     3.
     */
 
-    std::default_random_engine rand;
+    // std::default_random_engine rand;
+    std::random_device rd;
+    std::mt19937 rand(rd());
     for (int i = 0; i < num; i++)
     {
         int int_month;
@@ -173,7 +196,14 @@ std::vector<std::string> randomDate(std::string start_date, std::string end_date
         // TODO: Leap years
         while (int_day > days_per_month[int_month])
         {
-            --int_day;
+            if (isLeapYear(year) and int_day == 29)
+            {
+                break;
+            }
+            else
+            {
+                --int_day;
+            }
         };
 
         std::string str_day = std::string(2 - std::to_string(int_day).length(), '0').append(std::to_string(int_day));
@@ -184,42 +214,6 @@ std::vector<std::string> randomDate(std::string start_date, std::string end_date
     return vals;
 }
 
-// ChatGPT Solution
-std::chrono::year_month_day parse_date(const std::string &date_str)
-{
-    std::istringstream iss(date_str);
-    int year, month, day;
-    char sep;
-    iss >> year >> sep >> month >> sep >> day;
-    return std::chrono::year_month_day{std::chrono::year{static_cast<int>(year)}, std::chrono::month{static_cast<unsigned int>(month)}, std::chrono::day{static_cast<unsigned int>(day)}};
-}
-
-std::string format_date(const std::chrono::year_month_day &ymd)
-{
-    std::ostringstream oss;
-    oss << std::setw(4) << std::setfill('0') << int(ymd.year()) << '/'
-        << std::setw(2) << std::setfill('0') << unsigned(ymd.month()) << '/'
-        << std::setw(2) << std::setfill('0') << unsigned(ymd.day());
-    return oss.str();
-}
-
-std::string generate_random_date(const std::string &start_date_str, const std::string &end_date_str)
-{
-    auto start_date = parse_date(start_date_str);
-    auto end_date = parse_date(end_date_str);
-
-    std::chrono::sys_days start_days = start_date;
-    std::chrono::sys_days end_days = end_date;
-
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<std::chrono::days::rep> dist((end_days - start_days).count());
-
-    std::chrono::sys_days random_days = start_days + std::chrono::days{dist(gen)};
-    std::chrono::year_month_day random_date = random_days;
-
-    return format_date(random_date);
-}
 ///////////////////////////////////////
 /////////////// Binding ///////////////
 ///////////////////////////////////////
@@ -235,5 +229,4 @@ NB_MODULE(fablegen, m)
     m.def("normal_distribution", &normalDistribution);
     m.def("integer_sequence", &integerSequence);
     m.def("random_date", &randomDate);
-    m.def("chatgpt_date", &generate_random_date);
 }
