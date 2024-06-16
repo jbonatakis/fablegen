@@ -178,8 +178,13 @@ std::vector<std::string> randomDate(std::string start_date, std::string end_date
         std::uniform_int_distribution<int> rand_day(1, 31);
         std::uniform_int_distribution<int> rand_start_day(start_day, 31);
         std::uniform_int_distribution<int> rand_end_day(1, end_day);
+        std::uniform_int_distribution<int> rand_start_end_day(start_day, end_day);
 
-        if (int_month == start_month)
+        if (start_month == end_month)
+        {
+            int_day = rand_start_end_day(rand);
+        }
+        else if (int_month == start_month)
         {
             int_day = rand_start_day(rand);
         }
