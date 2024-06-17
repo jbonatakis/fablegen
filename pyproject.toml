@@ -2,9 +2,6 @@
 authors = [
   {name = "Jack Bonatakis", email = "jackbonataki@gmail.com"},
 ]
-dependencies = [
-  "pydantic",
-]
 description = "README.md"
 name = "fablegen"
 readme = "README.md"
@@ -23,6 +20,9 @@ requires = ["setuptools"]
 
 [tool.setuptools]
 package-dir = {"" = "src"}
+
+[tool.setuptools.package-data]
+fablegen = ["include/*.so"]
 
 [tool.ruff]
 line-length = 99

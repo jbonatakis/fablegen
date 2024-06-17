@@ -121,6 +121,7 @@ std::vector<std::string> randomDate(std::string start_date, std::string end_date
 
     // Expects "yyyy/mm/dd"
     // Indices "0123/56/89"
+    char sep = start_date[4];
     int start_year = stoi(start_date.substr(0, 4));
     int start_month = stoi(start_date.substr(5, 2));
     int start_day = stoi(start_date.substr(8, 2));
@@ -198,7 +199,6 @@ std::vector<std::string> randomDate(std::string start_date, std::string end_date
         };
 
         // Handle day values greater than number of days in the month
-        // TODO: Leap years
         while (int_day > days_per_month[int_month])
         {
             if (isLeapYear(year) and int_day == 29)
@@ -213,7 +213,7 @@ std::vector<std::string> randomDate(std::string start_date, std::string end_date
 
         std::string str_day = std::string(2 - std::to_string(int_day).length(), '0').append(std::to_string(int_day));
 
-        vals.push_back(std::to_string(year) + "/" + str_month + "/" + str_day);
+        vals.push_back(std::to_string(year) + sep + str_month + sep + str_day);
     }
 
     return vals;
