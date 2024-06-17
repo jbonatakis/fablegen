@@ -1,0 +1,11 @@
+dist/
+build/
+env/
+.env
+*.egg-info
+.ruff_cache/
+.pytest_cache/
+poetry.lock
+__pycache__
+.vscode/
+include
