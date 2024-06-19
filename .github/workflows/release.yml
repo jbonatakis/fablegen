@@ -144,6 +144,10 @@ jobs:
       #     else
       #       cmake -G "${{ matrix.config.generator }}" -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} -DGHC_FILESYSTEM_TEST_COMPILE_FEATURES="${{ matrix.config.compatibility }}" -DCMAKE_INSTALL_PREFIX:PATH=install
       #     fi
+      - name: Install nanobind
+        shell: bash
+        run: |
+          pip install nanobind
 
       - name: Build project
         shell: bash
