@@ -19,7 +19,7 @@ else()
   set(DEV_MODULE Development.Module)
 endif()
 
-find_package(Python 3.8 COMPONENTS Interpreter ${DEV_MODULE} REQUIRED)
+# find_package(Python 3.8 COMPONENTS Interpreter ${DEV_MODULE} REQUIRED)
 
 if(DEFINED ENV{PYTHON_EXECUTABLE})
     set(Python_EXECUTABLE $ENV{PYTHON_EXECUTABLE})
