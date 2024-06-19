@@ -79,11 +79,7 @@ jobs:
           - name: "macOS 13 AppleClang"
             os: macos-13
             build_type: Release
-            # packages: ninja
-            # generator: Ninja
-            compatibility: "cxx_std_11;cxx_std_17;cxx_std_20"
-            # cc: clang
-            # cxx: clang++
+            python_version: "3.10"
             cc: gcc
             cxx: g++
 
@@ -106,7 +102,7 @@ jobs:
           #   cxx: clang++
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: print environment
         run: |
@@ -149,6 +145,15 @@ jobs:
       #   run: |
       #     pip install nanobind
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.config.python_version }} 
+
       - name: Build project
         shell: bash
-        run: pip install nanobind && make
+        run: |
+          pip install nanobind && \
+          mkdir build && \
+          cd build && \
+          and cmake .. && \
+          make
