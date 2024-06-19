@@ -75,8 +75,14 @@ jobs:
           #   compatibility: "cxx_std_11;cxx_std_17;cxx_std_20"
           #   cc: gcc
           #   cxx: g++
-
-          - name: "macOS 13 AppleClang"
+          - name: "macOS 14"
+            os: macos-14
+            build_type: Release
+            python_version: "3.10"
+            cc: gcc
+            cxx: g++
+  
+          - name: "macOS 13"
             os: macos-13
             build_type: Release
             python_version: "3.10"
