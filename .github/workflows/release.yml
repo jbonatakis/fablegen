@@ -154,7 +154,7 @@ jobs:
         run: |
           python -m venv env && \
           source env/bin/activate && \
-          pwd && \
+          export PYTHON_EXECUTABLE=/Users/runner/work/fablegen/fablegen/env/bin/python3 && \
           pip install nanobind && \
           mkdir build && \
           cd build && \
