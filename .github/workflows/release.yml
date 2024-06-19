@@ -155,5 +155,5 @@ jobs:
           pip install nanobind && \
           mkdir build && \
           cd build && \
-          and cmake .. && \
+          cmake .. && \
           make
