@@ -152,6 +152,9 @@ jobs:
       - name: Build project
         shell: bash
         run: |
+          python -m venv env && \
+          source env/bin/activate && \
+          pwd && \
           pip install nanobind && \
           mkdir build && \
           cd build && \
