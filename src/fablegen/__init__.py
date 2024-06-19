@@ -1,1 +1,1 @@
-from .include.fablegen import *
+from .fablegen import *

@@ -1,0 +1,168 @@
+on:
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - 'pyproject.toml'
+  pull_request
+
+jobs:
+  # tag-github-release:
+  #   name: Tag and create Github Release
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+
+  #     - name: Get version
+  #       id: get-version
+  #       run: |
+  #         echo "version=$(grep version pyproject.toml | cut -d= -f2- | tr -d '"')" >> $GITHUB_OUTPUT
+
+  #     - name: Create Tag
+  #       id: tag-version
+  #       uses: mathieudutour/github-tag-action@v6.2
+  #       with:
+  #         github_token: ${{ secrets.GITHUB_TOKEN }}
+  #         custom_tag: ${{ steps.get-version.outputs.version }}
+
+  #     - name: Create a GitHub release
+  #       uses: ncipollo/release-action@v1
+  #       with:
+  #         tag: ${{ steps.tag-version.outputs.new_tag }}
+  #         name: Release ${{ steps.tag-version.outputs.new_tag }}
+  #         body: ${{ steps.tag-version.outputs.changelog }}
+
+  build:
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          # - name: "Ubuntu 22.04 GCC 11"
+          #   os: ubuntu-22.04
+          #   build_type: Release
+          #   packages: ninja-build
+          #   generator: Ninja
+          #   compatibility: "cxx_std_11;cxx_std_17;cxx_std_20"
+          #   cc: gcc
+          #   cxx: g++
+
+          # - name: "Ubuntu 22.04 Clang 13.0"
+          #   os: ubuntu-22.04
+          #   build_type: Release
+          #   packages: ninja-build libc++-13-dev libc++abi-13-dev
+          #   generator: Ninja
+          #   compatibility: "cxx_std_11;cxx_std_17;cxx_std_20"
+          #   cc: clang-13
+          #   cxx: clang++-13
+
+          # - name: "Ubuntu 22.04 Clang 15.0"
+          #   os: ubuntu-22.04
+          #   build_type: Release
+          #   packages: ninja-build libc++-15-dev libc++abi-15-dev
+          #   generator: Ninja
+          #   compatibility: "cxx_std_11;cxx_std_17;cxx_std_20"
+          #   cc: clang-15
+          #   cxx: clang++-15
+
+          # - name: "Ubuntu 22.04 GCC 11 coverage"
+          #   os: ubuntu-22.04
+          #   build_type: Debug
+          #   packages: ninja-build lcov
+          #   generator: Ninja
+          #   compatibility: "cxx_std_11;cxx_std_17;cxx_std_20"
+          #   cc: gcc
+          #   cxx: g++
+          - name: "macOS 14"
+            os: macos-14
+            build_type: Release
+            python_version: "3.10"
+            cc: gcc
+            cxx: g++
+  
+          - name: "macOS 13"
+            os: macos-13
+            build_type: Release
+            python_version: "3.10"
+            cc: gcc
+            cxx: g++
+
+          # - name: "macOS 12 AppleClang"
+          #   os: macos-12
+          #   build_type: Release
+          #   packages: ninja
+          #   generator: Ninja
+          #   compatibility: "cxx_std_11;cxx_std_17"
+          #   cc: clang
+          #   cxx: clang++
+
+          # - name: "macOS 11 AppleClang"
+          #   os: macos-11
+          #   build_type: Release
+          #   packages: ninja
+          #   generator: Ninja
+          #   compatibility: "cxx_std_11;cxx_std_17"
+          #   cc: clang
+          #   cxx: clang++
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: print environment
+        run: |
+          echo github.event.action: ${{ github.event.action }}
+          echo github.event_name: ${{ github.event_name }}
+
+      # - name: Install dependencies on Ubuntu
+      #   if: startsWith(matrix.config.os, 'ubuntu')
+      #   shell: bash
+      #   run: |
+      #     sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+      #     sudo apt update
+      #     sudo apt install ${{ matrix.config.packages }}
+
+      # - name: Install dependencies on windows
+      #   if: startsWith(matrix.config.os, 'windows')
+      #   run: |
+      #     choco install ${{ matrix.config.packages }}
+
+      # - name: Install dependencies on macOS
+      #   if: startsWith(matrix.config.os, 'macos')
+      #   run: |
+      #     brew install ${{ matrix.config.packages }}
+
+      # - name: Configure project
+      #   shell: bash
+      #   run: |
+      #     export CC=${{ matrix.config.cc }}
+      #     export CXX=${{ matrix.config.cxx }}
+      #     cmake --version
+      #     mkdir build
+      #     mkdir install
+      #     if [[ "${{ matrix.config.build_type }}" == "Debug" ]]; then
+      #       cmake -G "${{ matrix.config.generator }}" -S . -B build -DCMAKE_BUILD_TYPE=Debug -DGHC_COVERAGE=ON -DGHC_FILESYSTEM_TEST_COMPILE_FEATURES="${{ matrix.config.compatibility }}" -DCMAKE_INSTALL_PREFIX:PATH=install
+      #     else
+      #       cmake -G "${{ matrix.config.generator }}" -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} -DGHC_FILESYSTEM_TEST_COMPILE_FEATURES="${{ matrix.config.compatibility }}" -DCMAKE_INSTALL_PREFIX:PATH=install
+      #     fi
+      # - name: Install nanobind
+      #   shell: bash
+      #   run: |
+      #     pip install nanobind
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.config.python_version }} 
+
+      - name: Build project
+        shell: bash
+        run: |
+          python -m venv env && \
+          source env/bin/activate && \
+          export PYTHON_EXECUTABLE=/Users/runner/work/fablegen/fablegen/env/bin/python3 && \
+          pip install nanobind && \
+          mkdir build && \
+          cd build && \
+          cmake .. && \
+          make && ls

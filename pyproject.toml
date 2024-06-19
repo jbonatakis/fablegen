@@ -22,7 +22,7 @@ requires = ["setuptools"]
 package-dir = {"" = "src"}
 
 [tool.setuptools.package-data]
-fablegen = ["include/*.so"]
+fablegen = ["*.so"]
 
 [tool.ruff]
 line-length = 99

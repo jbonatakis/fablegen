@@ -11,6 +11,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Specify the C++ compiler (g++)
 set(CMAKE_CXX_COMPILER g++)
 
+set(CMAKE_PREFIX_PATH "env/lib/nanobind")
+
 if (CMAKE_VERSION VERSION_LESS 3.18)
   set(DEV_MODULE Development)
 else()
@@ -18,6 +20,10 @@ else()
 endif()
 
 find_package(Python 3.8 COMPONENTS Interpreter ${DEV_MODULE} REQUIRED)
+
+if(DEFINED ENV{PYTHON_EXECUTABLE})
+    set(Python_EXECUTABLE $ENV{PYTHON_EXECUTABLE})
+endif()
 
 if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
